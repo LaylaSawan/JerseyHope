@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jersey Hope — Play It Forward</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a6b3c;
+    --green-light: #2d8f54;
+    --gold: #e8a020;
+    --gold-light: #f5c05a;
+    --cream: #faf7f0;
+    --dark: #0f1f15;
+    --text: #2c3e2d;
+    --muted: #6b7c6e;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(250,247,240,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(26,107,60,0.1);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900;
+    color: var(--green);
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--text);
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green); }
+  .nav-cta {
+    background: var(--green); color: white !important;
+    padding: 0.6rem 1.4rem; border-radius: 50px;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--green-light) !important; color: white !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--dark) 0%, #0d3320 40%, #1a5c35 100%);
+  }
+  .hero-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: repeating-linear-gradient(
+      45deg, white 0, white 1px, transparent 0, transparent 50%
+    );
+    background-size: 30px 30px;
+  }
+  .hero-glow {
+    position: absolute; top: -20%; right: -10%;
+    width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,160,32,0.15) 0%, transparent 70%);
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 700px;
+    animation: fadeUp 1s ease both;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.3);
+    color: var(--gold-light); padding: 0.4rem 1rem;
+    border-radius: 50px; font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .hero-badge::before { content: '⚽'; font-size: 0.9rem; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 900; line-height: 1.05;
+    color: white; margin-bottom: 1.5rem;
+  }
+  h1 em { color: var(--gold); font-style: italic; }
+  .hero-sub {
+    font-size: 1.2rem; line-height: 1.7;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 2.5rem; max-width: 540px;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: var(--dark);
+    padding: 1rem 2.2rem; border-radius: 50px;
+    font-weight: 700; font-size: 1rem;
+    text-decoration: none; display: inline-block;
+    transition: all 0.25s; letter-spacing: 0.2px;
+    box-shadow: 0 4px 20px rgba(232,160,32,0.35);
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,160,32,0.45); }
+  .btn-secondary {
+    background: transparent; color: white;
+    padding: 1rem 2.2rem; border-radius: 50px;
+    font-weight: 600; font-size: 1rem;
+    text-decoration: none; display: inline-block;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    transition: all 0.25s;
+  }
+  .btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.07); }
+
+  .hero-stats {
+    position: absolute; bottom: 3rem; right: 4rem;
+    display: flex; gap: 2.5rem; z-index: 2;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 900;
+    color: var(--gold);
+  }
+  .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; text-transform: uppercase; }
+
+  /* MISSION STRIP */
+  .mission-strip {
+    background: var(--green); color: white;
+    padding: 1.5rem 4rem;
+    display: flex; align-items: center; justify-content: center;
+    gap: 3rem; flex-wrap: wrap;
+  }
+  .strip-item { display: flex; align-items: center; gap: 0.7rem; font-size: 0.95rem; font-weight: 500; }
+  .strip-icon { font-size: 1.3rem; }
+
+  /* STORY SECTION */
+  .section { padding: 6rem 4rem; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--green);
+    margin-bottom: 0.8rem;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900; line-height: 1.15;
+    color: var(--dark); margin-bottom: 1.5rem;
+  }
+
+  .story-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center; max-width: 1100px; margin: 0 auto;
+  }
+  .story-text p { font-size: 1.05rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.2rem; }
+  .story-text p strong { color: var(--text); }
+  .story-visual {
+    position: relative;
+  }
+  .story-card {
+    background: var(--green); color: white;
+    border-radius: 24px; padding: 3rem;
+    position: relative; overflow: hidden;
+  }
+  .story-card::before {
+    content: '"'; font-family: 'Playfair Display', serif;
+    font-size: 12rem; line-height: 1; color: rgba(255,255,255,0.07);
+    position: absolute; top: -1rem; left: 1rem;
+  }
+  .story-card-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-style: italic; line-height: 1.6;
+    position: relative; z-index: 1; margin-bottom: 1.5rem;
+  }
+  .story-card-author { font-size: 0.85rem; opacity: 0.7; position: relative; z-index: 1; }
+  .story-card-author strong { opacity: 1; display: block; font-size: 0.95rem; margin-bottom: 0.2rem; }
+  .story-accent {
+    position: absolute; bottom: -2rem; right: -2rem;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: var(--gold); opacity: 0.25;
+  }
+
+  /* HOW IT WORKS */
+  .how-section { background: var(--dark); color: white; }
+  .how-section h2 { color: white; }
+  .how-section .section-label { color: var(--gold); }
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2rem; max-width: 1100px; margin: 3rem auto 0;
+  }
+  .step {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 2.5rem;
+    position: relative; transition: border-color 0.3s;
+  }
+  .step:hover { border-color: rgba(232,160,32,0.35); }
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem; font-weight: 900;
+    color: rgba(232,160,32,0.2); line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.7rem; color: white; }
+  .step p { font-size: 0.95rem; line-height: 1.7; color: rgba(255,255,255,0.55); }
+  .step-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+
+.step-icon {
+    position: relative;
+    display: inline-block;
+  }
+
+  .step-icon img {
+    width: 250px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+  }
+
+  .step-icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #e8a020;
+    opacity: 0.3;
+    border-radius: 12px;
+    pointer-events: none;
+  }
+
+  /* IMPACT */
+  .impact-section { background: var(--cream); }
+  .impact-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; max-width: 1100px; margin: 3rem auto 0;
+  }
+  .impact-card {
+    background: white; border-radius: 20px;
+    padding: 2.5rem; text-align: center;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    transition: transform 0.25s;
+  }
+  .impact-card:hover { transform: translateY(-4px); }
+  .impact-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .impact-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem; font-weight: 900;
+    color: var(--green); margin-bottom: 0.4rem;
+  }
+  .impact-label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+
+  /* DONATE SECTION */
+  .donate-section {
+    background: linear-gradient(135deg, var(--green) 0%, #0d3320 100%);
+    color: white; text-align: center; padding: 6rem 4rem;
+  }
+  .donate-section h2 { color: white; max-width: 600px; margin: 0 auto 1rem; }
+  .donate-section p { color: rgba(255,255,255,0.7); max-width: 520px; margin: 0 auto 2.5rem; font-size: 1.05rem; line-height: 1.7; }
+  .donate-steps {
+    display: flex; justify-content: center; gap: 2rem;
+    flex-wrap: wrap; margin-bottom: 3rem;
+  }
+  .donate-step {
+    background: rgba(255,255,255,0.1); border-radius: 12px;
+    padding: 1rem 1.5rem; font-size: 0.9rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  /* CONTACT */
+  .contact-section { padding: 6rem 4rem; max-width: 700px; margin: 0 auto; text-align: center; }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; margin-top: 2.5rem; text-align: left; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-field label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+  .form-field input, .form-field textarea, .form-field select {
+    width: 100%; padding: 0.85rem 1rem;
+    border: 1.5px solid rgba(26,107,60,0.2);
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; color: var(--text);
+    background: white; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-field input:focus, .form-field textarea:focus { border-color: var(--green); }
+  .form-field textarea { resize: vertical; min-height: 110px; }
+  .form-submit {
+    background: var(--green); color: white;
+    border: none; padding: 1rem 2.5rem; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.25s; align-self: center;
+  }
+  .form-submit:hover { background: var(--green-light); transform: translateY(-2px); }
+  .form-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.5);
+    padding: 3rem 4rem; text-align: center;
+    font-size: 0.9rem;
+  }
+  footer .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 900;
+    color: white; margin-bottom: 0.5rem;
+  }
+  footer .footer-logo span { color: var(--gold); }
+  footer p { margin-bottom: 0.3rem; }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero, .section { padding: 6rem 1.5rem 3rem; }
+    .story-grid, .steps, .impact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-stats { right: 1.5rem; gap: 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .mission-strip { padding: 1.5rem; gap: 1.5rem; }
+    .donate-section { padding: 4rem 1.5rem; }
+    footer { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Jersey<span>Hope</span></div>
+  <ul class="nav-links">
+    <li><a href="#story">Our Story</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#contact" class="nav-cta">Donate Gear</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">London, Ontario · Founded 2026</div>
+    <h1>Your old jersey<br>is someone's<br><em>new dream.</em></h1>
+    <p class="hero-sub">Jersey Hope collects gently used athletic gear at the end of every season, and delivers it to children in underserved communities around the world, starting in the West Bank.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Age Groups</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1</div>
+      <div class="stat-label">Big Mission</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Hope Shared</div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="section" id="story">
+  <div class="story-grid">
+    <div class="story-text reveal">
+      <div class="section-label">Our Story</div>
+      <h2>Sport has the power to unite the world.</h2>
+      <p>My name is <strong>Layla</strong>. I'm a Grade 10 student and a referee with the Oakridge Optimist Soccer Club in London, Ontario. Every season, I watch kids finish their last game, fold up their jerseys, and never think about them again.</p>
+      <p>Meanwhile, on the other side of the world in villages in the West Bank, children have the same passion for the sport, but they don't have the gear. </p>
+      <p>So I decided to do something about it. <strong>Jersey Hope</strong> started with a simple idea: what if the jersey you no longer need could give another child the joy of belonging to a team?</p>
+      <p>This initiative is run entirely by me, from London, Ontario with the help of our community and the generosity of families like yours!</p>
+    </div>
+    <div class="story-visual reveal">
+      <div class="story-card">
+        <div class="story-card-text">"Sport doesn't care where you're from. A ball, a field, and a jersey, that's all a child needs to feel like they belong."</div>
+        <div class="story-card-author">
+          <strong>Layla</strong>
+          Founder, Jersey Hope · Referee, Oakridge Optimist Soccer Club
+        </div>
+        <div class="story-accent"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-section" id="how">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="section-label">How It Works</div>
+    <h2>Simple. Transparent. Impactful.</h2>
+    <div class="steps">
+      <div class="step reveal">
+    <div class="step-icon">
+        <img src="step_num_1_image.jpg" alt="Season Ends" />
+    </div>
+    <div class="step-num">01</div>
+    <h3>Season Ends</h3>
+        <p>At the close of the sports season, I will reach out to house-league team coaches and parents, starting with U6, U8, and U10 in the Oakridge Optimist Soccer Club to collect gently used jerseys and shorts.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-icon">
+        <img src="step_num_2_image.png" alt="Season Ends" />
+      </div>
+        <div class="step-num">02</div>
+        <h3>We Collect & Sort</h3>
+        <p>Donated gear is collected and packed for shipment. Every item is checked to ensure it's truly usable and meaningful to receive.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-icon">
+        <img src="step_num_3_image.jpg" alt="Seasoen Ends" />
+        </div>
+        <div class="step-num">03</div>
+        <h3>Delivered With Care</h3>
+        <p>Gear is shipped to underserved schools and communities, beginning in villages in the West Bank, through trusted local connections. Children receive the gear directly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="section impact-section" id="impact">
+  <div style="max-width:1100px; margin:0 auto; text-align:center;">
+    <div class="section-label">Impact</div>
+    <h2>What your gear can do</h2>
+    <div class="impact-grid">
+      <div class="impact-card reveal">
+        <div class="impact-num">1 Jersey</div>
+        <div class="impact-label">Gives a child their first sense of being part of a team</div>
+      </div>
+      <div class="impact-card reveal">
+        <div class="impact-num">1 Ball</div>
+        <div class="impact-label">Creates hours of play, friendship, and physical health</div>
+      </div>
+      <div class="impact-card reveal">
+        <div class="impact-num">1 Donation</div>
+        <div class="impact-label">Sends a message of hope and solidarity across the world</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DONATE -->
+<section class="donate-section" id="donate">
+  <div class="section-label" style="color:var(--gold)">Get Involved</div>
+  <h2>Ready to play it forward?</h2>
+  <p>Donating is easy. Drop off your gently used gear at the end of your season, with the parent who is in charge of collecting the jerseys. Every jersey matters.</p>
+  <div class="donate-steps">
+    <div class="donate-step">Jerseys & Tops</div>
+    <div class="donate-step">Shorts & Bottoms</div>
+  </div>
+  <a href="#contact" class="btn-primary" style="font-size:1.05rem; padding:1.1rem 2.5rem;">Contact Us to Donate</a>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="section-label" style="text-align:center">Contact</div>
+  <h2>Let's connect</h2>
+  <p style="color:var(--muted); margin-top:0.5rem; line-height:1.7;">Whether you want to donate gear or just learn more I would love to hear from you!</p>
+  <form class="contact-form" onsubmit="handleSubmit(event)">
+    <div class="form-row">
+      <div class="form-field">
+        <label>Your Name</label>
+        <input type="text" name="from_name" placeholder="Jane Smith" required />
+      </div>
+      <div class="form-field">
+        <label>Email Address</label>
+        <input type="email" name="reply_to" placeholder="jane@example.com" required />
+      </div>
+    </div>
+    <div class="form-field">
+      <label>I'm reaching out because…</label>
+      <select name="reason">
+        <option>I'm a parent interested in donating</option>
+        <option>I'm a coach</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Message</label>
+      <textarea name="message" placeholder="Tell us a bit about what you'd like to donate or how you'd like to help..."></textarea>
+    </div>
+    <button type="submit" class="form-submit">Send Message</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Jersey<span>Hope</span></div>
+  <p style="margin:0.3rem 0 1rem; color:rgba(255,255,255,0.4); font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;">Play It Forward</p>
+  <p>Founded by Layla · London, Ontario, Canada</p>
+  <p>Partnered with Oakridge Optimist Soccer Club</p>
+  <p style="margin-top:1rem; font-size:0.8rem;">Made with 💚 for children everywhere</p>
+</footer>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  emailjs.init({ publicKey: "Vh8KO8IaWA2dL5jZg" });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    emailjs.sendForm(
+      'service_2pv6cob',
+      'template_2c553o5',
+      e.target
+    ).then(() => {
+      btn.textContent = 'Message Sent!';
+      e.target.reset();
+    }).catch((err) => {
+      btn.textContent = 'Failed, try again';
+      console.error(err);
+    }).finally(() => {
+      btn.disabled = false;
+      setTimeout(() => { btn.textContent = 'Send Message ✉️'; }, 3000);
+    });
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
